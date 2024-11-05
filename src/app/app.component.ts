@@ -1,13 +1,39 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Employee } from './employee';
+import { HttpErrorResponse } from '@angular/common/http';
+import { EmployeeService } from './employee.service';
+import { CommonModule } from '@angular/common'; // Import CommonModule
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  styleUrls: ['./app.component.css'], // Fix the property name from styleUrl to styleUrls
+  imports: [CommonModule, ] // Add HttpClientModule here
 })
-export class AppComponent {
-  title = 'workersapp';
+export class AppComponent implements OnInit {
+
+  public employees: Employee[] = [];
+
+  constructor(private employeeService: EmployeeService) { }
+
+  ngOnInit() {
+    this.getEmployees();
+  }
+
+  public getEmployees(): void {
+    this.employeeService.getEmployees().subscribe(
+      (response: Employee[]) => {
+
+        this.employees = response;
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    );
+  }
+
+
+
 }
